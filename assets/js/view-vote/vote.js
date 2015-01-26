@@ -5,6 +5,44 @@ define([ 'require',
          'angular'], function(require) {
   var angular = require('angular');
   
+  var getVote = function ($scope, $firebase) {
+    $firebase(
+      $scope.fireRef.child("v/" + $scope.slug)
+    )
+    .$asObject()
+    .$loaded()
+    .then(
+      function (vote) {
+        $scope.vote = vote
+        getResults($scope, $firebase)
+        $scope.isMulti = vote.mode === 'multi'
+        $scope.notFound = !$scope.vote.$value 
+      }
+    ).catch(function (error) {
+      console.log(error);
+    });
+  };
+
+  var getResults = function ($scope, $firebase) {
+    $firebase(
+      $scope.fireRef.child("r/" + $scope.vote.resultId)
+    )
+    .$asObject()
+    .$bindTo($scope, 'results')
+  };
+
+  var auth = function ($scope, $firebase) {
+    if (! $scope.fireRef.getAuth()) {
+      $scope.fireRef
+      .authAnonymously(function(error, authData) {
+        if (error) {
+          $('.js-empty-slate').html("Authenticated Failed")
+        }
+      });
+    }
+    $scope.voterId = $scope.fireRef.getAuth().uid
+  };
+
   return angular
   .module("voteView", [
   	"firebase", 
@@ -14,17 +52,17 @@ define([ 'require',
     $scope.slug = $routeParams.slug;
     document.title += " - " + $scope.slug
     $scope.fireRef = voteFireRef();
-    var sync = $firebase($scope.fireRef.child("v/" + $scope.slug))
-    sync.$asObject().$loaded().then(
-      function (vote) {
-        $scope.vote = vote
-        $scope.isMulti = vote.mode === 'multi'
-        if (!$scope.vote.$value ) {
-          $('.js-empty-slate').html("404")
+    auth($scope, $firebase);
+    getVote($scope, $firebase);
+    $scope.voteMe = function () {
+      $scope.results.results.map(function(r, i){
+        if ($scope.isMulti) {
+          r.voters[$scope.voterId] = $scope.selected[i] ? 1 : 0;
         }
-      }
-    ).catch(function (error) {
-      console.log(error);
-    });
+        else {
+          r.voters[$scope.voterId] = i === $scope.selected ? 1 : 0;
+        }
+      })
+    }
   });
 });

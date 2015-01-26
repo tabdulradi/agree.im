@@ -1,23 +1,17 @@
 <h2>Vote {{slug}}</h2> 
 <div ng-show="vote.options">
-	<div class="form-group vote-form">
+	<div class="form-group vote-form js-form">
     <div ng-class="{checkbok: isMulti, radio: !isMulti}" ng-repeat="(index, opt) in vote.options" >
 			<label>
-        <input ng-if="isMulti" type="checkbox" name="{{vote.$id}}" value="{{index}}">
-				<input ng-if="!isMulti" type="radio" name="{{vote.$id}}" value="{{index}}">
+        <input ng-if="isMulti" type="checkbox" name="{{vote.$id}}" ng-value="index" ng-model="$parent.$parent.selected[index]" ng-click="voteMe()">
+				<input ng-if="!isMulti" type="radio" name="{{vote.$id}}" ng-value="index" ng-model="$parent.$parent.selected" ng-click="voteMe()">
         <span>{{opt.text}}</span>
 			</label>		
 		</div>
-		<!-- <div class="radio" ng-repeat="(index, opt) in vote.options">
-			<label>
-				<input type="radio" name="{{vote.$id}}" value="{{index}}">
-        <span>{{opt.text}}</span>
-			</label>		
-		</div> -->
 	</div>
-	<button type="submit" class="btn btn-default">Vote</button>
 </div>
 <div ng-hide="vote.options" class="js-empty-slate">
-  <span class="glyphicon glyphicon-refresh spin fs-50"></span>
+  <span ng-if="!notFound" class="glyphicon glyphicon-refresh spin fs-50"></span>
+  <span ng-if="notFound">404</span>
 </div>
 
