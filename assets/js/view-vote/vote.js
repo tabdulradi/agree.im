@@ -15,5 +15,6 @@ define([ 'require',
     $scope.fireRef = voteFireRef();
     var sync = $firebase($scope.fireRef.child("v/" + $scope.slug))
     $scope.vote = sync.$asObject()
+    
   });
 });
