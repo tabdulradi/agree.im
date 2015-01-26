@@ -6,15 +6,25 @@ define([ 'require',
   var angular = require('angular');
   
   return angular
-  .module("votePage", [
+  .module("voteView", [
   	"firebase", 
   	"voteFireRefServiceModule"
   ]).
-  controller("votePageCtrl", function($scope, $firebase, $routeParams, voteFireRef) {
+  controller("voteViewCtrl", function($scope, $firebase, $routeParams, voteFireRef) {
     $scope.slug = $routeParams.slug;
+    document.title += " - " + $scope.slug
     $scope.fireRef = voteFireRef();
     var sync = $firebase($scope.fireRef.child("v/" + $scope.slug))
-    $scope.vote = sync.$asObject()
-    
+    sync.$asObject().$loaded().then(
+      function (vote) {
+        $scope.vote = vote
+        $scope.isMulti = vote.mode === 'multi'
+        if (!$scope.vote.$value ) {
+          $('.js-empty-slate').html("404")
+        }
+      }
+    ).catch(function (error) {
+      console.log(error);
+    });
   });
 });
