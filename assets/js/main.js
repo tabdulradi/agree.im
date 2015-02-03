@@ -1,5 +1,6 @@
 "use strict";
 define([ 'require', 
+         'jQuery',
          'angular',
          'view-vote/vote',
          'view-results/results',
@@ -11,7 +12,7 @@ define([ 'require',
   angular
   .module("voteNowApp", [
     "ngRoute",
-    "votePage",
+    "voteView",
     "resultsPage",
     "createVote"
   ])
@@ -25,7 +26,7 @@ define([ 'require',
       });
       $routeProvider.when("/v/:slug", {
         templateUrl: "assets/js/view-vote/vote.html",
-        controller: "votePageCtrl",
+        controller: "voteViewCtrl",
         controllerAs: "voteCtrl"
       });
       $routeProvider.when("/r/:id", {

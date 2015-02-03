@@ -1,0 +1,51 @@
+.spin {
+  -webkit-animation: spin .8s infinite linear;
+  -moz-animation: spin .8s infinite linear;
+  -o-animation: spin .8s infinite linear;
+  animation: spin .8s infinite linear;
+     -webkit-transform-origin: 50% 58%;
+         transform-origin:50% 58%;
+         -ms-transform-origin:50% 58%; /* IE 9 */
+}
+
+@-moz-keyframes spin {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.fs-30 {
+  font-size: 30px;
+}
+.table > tbody > tr > td {
+  border-top: none;
+}
+
+.voter-percent {
+  height: 20px;
+  background-color: #058dc7;
+  min-width: 1px;
+  display: inline;
+  float: left;
+  margin: 0 10px 0 0;
+}
