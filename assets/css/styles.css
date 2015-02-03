@@ -34,9 +34,18 @@
     transform: rotate(360deg);
   }
 }
-.fs-50 {
-  font-size: 50px;
+.fs-30 {
+  font-size: 30px;
 }
-.vote-form {
+.table > tbody > tr > td {
+  border-top: none;
+}
 
+.voter-percent {
+  height: 20px;
+  background-color: #058dc7;
+  min-width: 1px;
+  display: inline;
+  float: left;
+  margin: 0 10px 0 0;
 }
