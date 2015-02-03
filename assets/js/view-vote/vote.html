@@ -1,0 +1,45 @@
+<h2>Vote {{slug}}</h2>
+<div ng-show="vote.options" class="table-responsive">
+	<table class="table">
+		<tbody>
+			<tr ng-repeat="(index, opt) in vote.options">
+				<td class="text-left">
+					<div ng-class="{checkbok: isMulti, radio: !isMulti}">
+						<label>
+							<input ng-if="isMulti"
+										 type="checkbox"
+										 name="{{vote.$id}}"
+  									 ng-value="index"
+										 ng-model="$parent.$parent.selected[index]"
+										 ng-click="voteMe()">
+							<input ng-if="!isMulti"
+										 type="radio"
+										 name="{{vote.$id}}"
+										 ng-value="index"
+										 ng-model="$parent.$parent.selected"
+										 ng-click="voteMe()"
+										 ng-checked="results.results[index].voters[voterId]">
+							<span>{{opt.text}}</span>
+						</label>
+					</div>
+				</td>
+				<td class="text-right">
+					{{getVotersDetails(index).votersAgree}}
+				</td>
+				<td class="text-left">
+					<div class="voter-percent"
+					     ng-style="getVotersDetails(index).percent">
+					</div>
+					{{getVotersDetails(index).percent.width}}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div ng-hide="vote.options" class="js-empty-slate">
+  <span ng-if="!notFound"
+	      class="glyphicon glyphicon-refresh spin fs-50">
+	</span>
+  <span ng-if="notFound">404</span>
+</div>
