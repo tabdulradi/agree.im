@@ -21,7 +21,7 @@ define([ 'require',
       ) {
 
         $scope.slug = $routeParams.slug;
-        document.title += " - " + $scope.slug
+        document.title += " - " + $scope.vote.title
         var authPromise = User().catch(function(error){
           $scope.authError = error;
         });
