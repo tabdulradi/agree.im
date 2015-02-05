@@ -21,7 +21,6 @@ define([ 'require',
       ) {
 
         $scope.slug = $routeParams.slug;
-        document.title += " - " + $scope.vote.title
         var authPromise = User().catch(function(error){
           $scope.authError = error;
         });
@@ -30,6 +29,7 @@ define([ 'require',
         .then(
           function (vote) {
             $scope.vote = vote
+            document.title += " - " + $scope.vote.title
             $scope.isMulti = vote.mode === 'multi'
             $scope.notFound = !$scope.vote.$value
           }
