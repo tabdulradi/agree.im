@@ -1,4 +1,4 @@
-<h2>Vote {{slug}}</h2>
+<h2>Agree on: {{slug}}</h2>
 <div ng-show="vote.options" class="table-responsive">
 	<table class="table">
 		<tbody>
@@ -23,17 +23,17 @@
 					</div>
 				</td>
 				<td class="text-right">
-					{{getVotersDetails(index).votersAgree}}
+					<strong>{{getVotersDetails(index).votersAgree}}</strong>
 				</td>
 				<td class="text-left">
 					<div class="voter-percent"
 					     ng-style="getVotersDetails(index).percent">
 					</div>
-					{{getVotersDetails(index).percent.width}}
 				</td>
 			</tr>
 		</tbody>
 	</table>
+	<em><strong>{{getVotersDetails(0).votersCount}}</strong> agreed on this!</em>
 </div>
 
 <div ng-hide="vote.options" class="js-empty-slate">

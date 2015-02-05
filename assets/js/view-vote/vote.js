@@ -45,6 +45,7 @@ define([ 'require',
           var votersDetails = $scope.vote.getVotersDetails(index)
           return {
             votersAgree: votersDetails.agreeSize,
+            votersCount: votersDetails.totalSize,
             percent: {
               width: votersDetails.percent  + "%"
             }
