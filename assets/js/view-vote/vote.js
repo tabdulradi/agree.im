@@ -2,7 +2,7 @@
 define([ 'require',
          'angularfire',
          'common/vote-factory',
-         'common/anonymous-user',
+         'common/auth-user',
          'angular'], function(require) {
 
   angular
@@ -16,13 +16,16 @@ define([ 'require',
         $scope,
         $firebase,
         $routeParams,
-        AnonymousUser,
+        User,
         Vote
       ) {
 
         $scope.slug = $routeParams.slug;
         document.title += " - " + $scope.slug
-        $scope.auth = AnonymousUser()
+        var authPromise = User().catch(function(error){
+          $scope.authError = error;
+        });
+
         Vote($scope.slug).$loaded()
         .then(
           function (vote) {
@@ -32,7 +35,9 @@ define([ 'require',
           }
         )
         $scope.voteMe = function () {
-          $scope.vote.voteForThis($scope.selected, $scope.auth.voterId);
+          authPromise.then(function(voterId){
+            $scope.vote.voteForThis($scope.selected, voterId);
+          });
         };
 
 

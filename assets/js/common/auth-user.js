@@ -9,26 +9,28 @@ define(['require',
       'firebase',
       'voteFireRefServiceModule'
       ])
-      .factory("AnonymousUser",
+      .factory("User",
         function(
           $firebase,
-          voteFireRef
+          voteFireRef,
+          $q
         ) {
           return function() {
             var ref = voteFireRef()
-            var authResult = {}
-            if (! ref.getAuth()) {
+            var deferred = $q.defer();
+
+            if (ref.getAuth()) {
+              deferred.resolve(ref.getAuth().uid);
+            } else{
               ref.authAnonymously(function(error, authData) {
                 if (error) {
-                  authResult["error"] = true;
+                  deferred.reject(error);
                 }
-                authResult["voterId"] = authData.uid
+                deferred.resolve(authData.uid);
               });
-            } else{
-              authResult["voterId"] = ref.getAuth().uid
             }
 
-            return authResult;
+            return deferred.promise;
           }
         }
       )
