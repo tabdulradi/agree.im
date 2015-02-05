@@ -1,9 +1,9 @@
 "use strict";
 define([ 'require',
+         'angular',
          'angularfire',
          'common/vote-factory',
-         'common/auth-user',
-         'angular'], function(require) {
+         'common/auth-user'], function(require) {
 
   angular
     .module("viewVote", [

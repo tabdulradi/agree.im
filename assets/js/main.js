@@ -1,6 +1,5 @@
 "use strict";
 define([ 'require',
-         'jQuery',
          'angular',
          'view-vote/vote',
          'view-results/results',

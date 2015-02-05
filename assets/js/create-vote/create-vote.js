@@ -1,10 +1,9 @@
 "use strict";
 define([ 'require',
+         'angular',
          'angularfire',
-         'common/firebase-service',
-         'angular'], function(require) {
-  var angular = require('angular');
-
+         'common/firebase-service'], function(require) {
+           
   return angular
   .module("createVote", [
   	"firebase",
