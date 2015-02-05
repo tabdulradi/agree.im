@@ -1,99 +1,54 @@
 "use strict";
 define([ 'require',
          'angularfire',
-         'common/firebase-service',
+         'common/vote-factory',
+         'common/auth-user',
          'angular'], function(require) {
-  var angular = require('angular');
 
-  var getVote = function ($scope, $firebase) {
-    $firebase(
-      $scope.fireRef.child("v/" + $scope.slug)
-    )
-    .$asObject()
-    .$loaded()
-    .then(
-      function (vote) {
-        $scope.vote = vote
-        getResults($scope, $firebase)
-        $scope.isMulti = vote.mode === 'multi'
-        $scope.notFound = !$scope.vote.$value
-      }
-    ).catch(function (error) {
-      console.log(error);
-    });
-  };
-
-  var getResults = function ($scope, $firebase) {
-    $firebase(
-      $scope.fireRef.child("r/" + $scope.vote.resultId)
-    )
-    .$asObject()
-    .$bindTo($scope, 'results')
-  };
-  var getVotersDetails = function (results, voteIndex) {
-    var obj = results[voteIndex].voters,
-        agreeSize = 0,
-        totalSize= 0,
-        key;
-
-    for (key in obj) {
-      if (obj.hasOwnProperty(key)) totalSize++;
-      if (obj[key] === 1) agreeSize++;
-    }
-    return {"agreeSize": agreeSize, "totalSize": totalSize}
-
-  };
-
-  var auth = function ($scope, $firebase) {
-    if (! $scope.fireRef.getAuth()) {
-      $scope.fireRef
-      .authAnonymously(function(error, authData) {
-        if (error) {
-          $('.js-empty-slate').html("Authenticated Failed")
-        }
-      });
-    }
-    if ($scope.fireRef.getAuth())
-      $scope.voterId = $scope.fireRef.getAuth().uid
-  };
-
-  return angular
-    .module("voteView", [
+  angular
+    .module("viewVote", [
     	"firebase",
-    	"voteFireRefServiceModule"
+    	"voteFactoryModule",
+      "usersFactoryModule"
     ])
     .controller("voteViewCtrl",
-      function($scope,
-               $firebase,
-               $routeParams,
-               voteFireRef) {
+      function(
+        $scope,
+        $firebase,
+        $routeParams,
+        User,
+        Vote
+      ) {
 
         $scope.slug = $routeParams.slug;
         document.title += " - " + $scope.slug
-        $scope.fireRef = voteFireRef();
-        auth($scope, $firebase);
-        getVote($scope, $firebase);
-        $scope.getVotersDetails = function(index) {
-          if($scope.results) {
-            var votersDetails = getVotersDetails($scope.results.results, index)
-            return {
-              votersAgree: votersDetails.agreeSize,
-              percent: {
-                width: (votersDetails.agreeSize/ votersDetails.totalSize)*100 + "%"
-              }
-            }
+        var authPromise = User().catch(function(error){
+          $scope.authError = error;
+        });
+
+        Vote($scope.slug).$loaded()
+        .then(
+          function (vote) {
+            $scope.vote = vote
+            $scope.isMulti = vote.mode === 'multi'
+            $scope.notFound = !$scope.vote.$value
           }
+        )
+        $scope.voteMe = function () {
+          authPromise.then(function(voterId){
+            $scope.vote.voteForThis($scope.selected, voterId);
+          });
         };
 
-        $scope.voteMe = function () {
-          $scope.results.results.map(function(r, i){
-            if ($scope.isMulti) {
-              r.voters[$scope.voterId] = $scope.selected[i] ? 1 : 0;
+
+        $scope.getVotersDetails = function(index) {
+          var votersDetails = $scope.vote.getVotersDetails(index)
+          return {
+            votersAgree: votersDetails.agreeSize,
+            percent: {
+              width: votersDetails.percent  + "%"
             }
-            else {
-              r.voters[$scope.voterId] = i === $scope.selected ? 1 : 0;
-            }
-          })
+          }
         };
       }
     );
